@@ -14,6 +14,24 @@ class Game {
     window.addEventListener("resize", (e) => {
       this.resize(e.currentTarget.innerWidth, e.currentTarget.innerHeight);
     });
+    // mouse controls
+    this.canvas.addEventListener("mousedown", (e) => {
+      this.player.move();
+    });
+    //keyboard controls
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowUp" || e.key === "w") {
+        this.player.move();
+      } else if (e.key === "ArrowDown" || e.key === "s") {
+        this.player.move();
+      } else if (e.code === "Space") {
+        this.player.move();
+      }
+    });
+    // touch controls
+    this.canvas.addEventListener("touchstart", (e) => {
+      this.player.move();
+    });
   }
   resize(width, height) {
     this.canvas.width = width;
