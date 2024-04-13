@@ -6,8 +6,10 @@ class Game {
     this.height = this.canvas.height;
     this.baseHeight = 720;
     this.ratio = this.height / this.baseHeight;
+    this.background = new Background(this);
     this.player = new Player(this);
     this.gravity;
+    this.speed;
 
     this.resize(window.innerWidth, window.innerHeight);
 
@@ -42,9 +44,13 @@ class Game {
     this.ratio = this.height / this.baseHeight;
 
     this.gravity = 0.15 * this.ratio;
+    this.speed = 2;
+    this.background.resize();
     this.player.resize();
   }
   render() {
+    this.background.update();
+    this.background.draw();
     this.player.update();
     this.player.draw();
   }
