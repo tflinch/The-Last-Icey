@@ -12,6 +12,7 @@ class Player {
     this.collisionX;
     this.collisionY;
     this.collisionRadius;
+    this.contact;
   }
   draw() {
     this.game.ctx.fillRect(this.x, this.y, this.width, this.height);
@@ -44,6 +45,7 @@ class Player {
     this.moveSpeed = 5 * this.game.ratio;
     this.collisionRadius = this.width * 0.5;
     this.collisionX = this.x + this.width * 0.5;
+    this.contact = false;
   }
   isTouchingTop() {
     return this.y <= 0;

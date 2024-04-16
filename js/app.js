@@ -9,12 +9,14 @@ class Game {
     this.background = new Background(this);
     this.player = new Player(this);
     this.obstacles = [];
-    this.numberOfObstacles = 10;
+    this.numberOfObstacles = 1;
     this.gravity;
     this.speed;
     this.score;
     this.gameOver;
     this.timer;
+    this.message1;
+    this.message2;
 
     this.resize(window.innerWidth, window.innerHeight);
 
@@ -43,7 +45,7 @@ class Game {
   resize(width, height) {
     this.canvas.width = width;
     this.canvas.height = height;
-    this.ctx.fillStyle = "blue";
+    this.ctx.fillStyle = "orange";
     this.ctx.font = "35px Poppins";
     this.ctx.textAlign = "right";
     this.ctx.lineWidth = 3;
@@ -85,6 +87,14 @@ class Game {
       this.obstacles.push(new Obstacle(this, firstX + i * obstacleSpacing));
     }
   }
+  detectHit(a, b) {
+    //distance between the two objects
+    const dx = a.collisionX - b.collisionX;
+    const dy = a.collisionY - b.collisionY;
+    const distance = Math.hypot(dx, dy);
+    const sumOfRadii = a.collisionRadius + b.collisionRadius;
+    return distance <= sumOfRadii;
+  }
   formatTimer() {
     //cleans up timer and removes two decemial points
     return (this.timer * 0.001).toFixed(1);
@@ -95,9 +105,31 @@ class Game {
     this.ctx.textAlign = "left";
     this.ctx.fillText("Timer: " + this.formatTimer(), 10, 40);
     if (this.gameOver) {
+      if (this.player.contact) {
+        this.message1 = "Melted!";
+        this.message2 = "Time survied " + this.formatTimer() + " seconds!";
+      } else if (this.obstacles.length <= 0) {
+        this.message1 = "Ice-Cream Forever";
+        this.message2 = "Time survied " + this.formatTimer() + " seconds!";
+      }
       this.ctx.textAlign = "center";
       this.ctx.font = "40px Poppins";
-      this.ctx.fillText("Game Over", this.width * 0.5, this.height * 0.5);
+      this.ctx.fillText(
+        this.message1,
+        this.width * 0.5,
+        this.height * 0.5 - 40
+      );
+      this.ctx.font = "15px Poppins";
+      this.ctx.fillText(
+        this.message2,
+        this.width * 0.5,
+        this.height * 0.5 - 20
+      );
+      this.ctx.fillText(
+        "Press 'R' to restart!",
+        this.width * 0.5,
+        this.height * 0.5
+      );
     }
     this.ctx.restore();
   }

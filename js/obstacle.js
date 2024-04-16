@@ -33,6 +33,10 @@ class Obstacle {
       console.log(this.game.obstacles.length);
       if (this.game.obstacles.length <= 0) this.game.gameOver = true;
     }
+    if (this.game.detectHit(this, this.game.player)) {
+      this.game.gameOver = true;
+      this.game.player.contact = true;
+    }
   }
   draw() {
     //draws cricle that will be used to reference for collison
