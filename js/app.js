@@ -14,6 +14,7 @@ class Game {
     this.speed;
     this.score;
     this.gameOver;
+    this.timer;
 
     this.resize(window.innerWidth, window.innerHeight);
 
@@ -59,8 +60,11 @@ class Game {
     });
     this.score = 0;
     this.gameOver = false;
+    this.timer = 0;
   }
-  render() {
+  render(deltaTime) {
+    //console.log(deltaTime); avg refresh time 16 seconds
+    this.timer += deltaTime;
     this.background.update();
     this.background.draw();
     this.drawStatusText();
@@ -79,10 +83,15 @@ class Game {
       this.obstacles.push(new Obstacle(this, firstX + i * obstacleSpacing));
     }
   }
+  formatTimer() {
+    //cleans up timer and removes two decemial points
+    return (this.timer * 0.001).toFixed(1);
+  }
   drawStatusText() {
     this.ctx.save();
-
-    this.ctx.fillText("Score: " + this.score, this.width - 10, 40);
+    this.ctx.fillText("Score: " + this.score, this.width - 15, 40);
+    this.ctx.textAlign = "left";
+    this.ctx.fillText("Timer: " + this.formatTimer(), 10, 40);
     this.ctx.restore();
   }
 }
@@ -95,9 +104,13 @@ window.addEventListener("load", function () {
 
   const game = new Game(canvas, ctx);
 
-  function animate() {
+  let previousTime = 0;
+  function animate(timeStamp) {
+    //deltaTime is the diffrence of previousTime and current frame
+    const deltaTime = timeStamp - previousTime;
+    previousTime = timeStamp;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    game.render();
+    game.render(deltaTime);
     if (!game.gameOver) requestAnimationFrame(animate);
   }
   requestAnimationFrame(animate);
