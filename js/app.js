@@ -9,7 +9,7 @@ class Game {
     this.background = new Background(this);
     this.player = new Player(this);
     this.obstacles = [];
-    this.numberOfObstacles = 10;
+    this.numberOfObstacles = 1;
     this.gravity;
     this.speed;
     this.score;
@@ -63,8 +63,8 @@ class Game {
     this.timer = 0;
   }
   render(deltaTime) {
-    //console.log(deltaTime); avg refresh time 16 seconds
-    this.timer += deltaTime;
+    //console.log(deltaTime); avg refresh time 60 frames a second
+    if (!this.gameOver) this.timer += deltaTime;
     this.background.update();
     this.background.draw();
     this.drawStatusText();
@@ -92,6 +92,11 @@ class Game {
     this.ctx.fillText("Score: " + this.score, this.width - 15, 40);
     this.ctx.textAlign = "left";
     this.ctx.fillText("Timer: " + this.formatTimer(), 10, 40);
+    if (this.gameOver) {
+      this.ctx.textAlign = "center";
+      this.ctx.font = "40px Poppins";
+      this.ctx.fillText("Game Over", this.width * 0.5, this.height * 0.5);
+    }
     this.ctx.restore();
   }
 }
@@ -111,7 +116,7 @@ window.addEventListener("load", function () {
     previousTime = timeStamp;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     game.render(deltaTime);
-    if (!game.gameOver) requestAnimationFrame(animate);
+    requestAnimationFrame(animate);
   }
   requestAnimationFrame(animate);
 });
