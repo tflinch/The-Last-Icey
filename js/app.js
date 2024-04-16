@@ -66,8 +66,8 @@ class Game {
   }
   createObstacles() {
     this.obstacles = [];
-    const firstX = 100;
-    const obstacleSpacing = 100;
+    const firstX = this.baseHeight * this.ratio;
+    const obstacleSpacing = 600 * this.ratio;
     for (let i = 0; i < this.numberOfObstacles; i++) {
       this.obstacles.push(new Obstacle(this, firstX + i * obstacleSpacing));
     }
