@@ -12,6 +12,8 @@ class Game {
     this.numberOfObstacles = 10;
     this.gravity;
     this.speed;
+    this.score;
+    this.gameOver;
 
     this.resize(window.innerWidth, window.innerHeight);
 
@@ -41,6 +43,8 @@ class Game {
     this.canvas.width = width;
     this.canvas.height = height;
     this.ctx.fillStyle = "blue";
+    this.ctx.font = "35px Poppins";
+    this.ctx.textAlign = "right";
     this.width = this.canvas.width;
     this.height = this.canvas.height;
     this.ratio = this.height / this.baseHeight;
@@ -53,10 +57,13 @@ class Game {
     this.obstacles.forEach((obstacle) => {
       obstacle.resize();
     });
+    this.score = 0;
+    this.gameOver = false;
   }
   render() {
     this.background.update();
     this.background.draw();
+    this.drawStatusText();
     this.player.update();
     this.player.draw();
     this.obstacles.forEach((obstacle) => {
@@ -72,6 +79,12 @@ class Game {
       this.obstacles.push(new Obstacle(this, firstX + i * obstacleSpacing));
     }
   }
+  drawStatusText() {
+    this.ctx.save();
+
+    this.ctx.fillText("Score: " + this.score, this.width - 10, 40);
+    this.ctx.restore();
+  }
 }
 
 window.addEventListener("load", function () {
@@ -85,7 +98,7 @@ window.addEventListener("load", function () {
   function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     game.render();
-    requestAnimationFrame(animate);
+    if (!game.gameOver) requestAnimationFrame(animate);
   }
   requestAnimationFrame(animate);
 });
