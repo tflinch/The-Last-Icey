@@ -9,7 +9,7 @@ class Game {
     this.background = new Background(this);
     this.player = new Player(this);
     this.obstacles = [];
-    this.numberOfObstacles = 10;
+    this.numberOfObstacles = 20;
     this.gravity;
     this.speed;
     this.score;
@@ -92,7 +92,7 @@ class Game {
   createObstacles() {
     this.obstacles = [];
     const firstX = this.baseHeight * this.ratio;
-    const obstacleSpacing = 600 * this.ratio;
+    const obstacleSpacing = 400 * this.ratio;
     for (let i = 0; i < this.numberOfObstacles; i++) {
       this.obstacles.push(new Obstacle(this, firstX + i * obstacleSpacing));
     }
@@ -118,8 +118,8 @@ class Game {
     } else {
       this.message1 = "Tap to start";
       this.ctx.textAlign = "center";
-      this.ctx.font = "bold 100px Montserrat Alternates";
-      this.ctx.fillStyle = "black";
+      this.ctx.font = "bold 100px Poppins";
+      this.ctx.fillStyle = "white";
       this.ctx.fillText(
         this.message1,
         this.width * 0.5,
@@ -129,21 +129,13 @@ class Game {
       this.ctx.textAlign = "left";
       this.ctx.font = "60px Poppins";
       this.ctx.fillStyle = "white";
-      this.ctx.fillText(
-        this.message2,
-        this.width * 0.75,
-        this.height * 0.5 - -260
-      );
+      this.ctx.fillText(this.message2, this.width * 0.65, this.height * 0.7);
       // next message
       this.message3 = "SpaceBar Or Tap or Click to Move";
       this.ctx.textAlign = "left";
       this.ctx.font = "20px Poppins";
       this.ctx.fillStyle = "white";
-      this.ctx.fillText(
-        this.message3,
-        this.width * 0.75,
-        this.height * 0.5 - -300
-      );
+      this.ctx.fillText(this.message3, this.width * 0.65, this.height * 0.8);
     }
     if (this.gameOver) {
       if (this.player.contact) {
@@ -154,17 +146,17 @@ class Game {
         this.message2 = "Time survied " + this.formatTimer() + " seconds!";
       }
       this.ctx.textAlign = "center";
-      this.ctx.font = "40px Poppins";
+      this.ctx.font = "80px Poppins";
       this.ctx.fillText(
         this.message1,
         this.width * 0.5,
-        this.height * 0.5 - 40
+        this.height * 0.5 - 80
       );
-      this.ctx.font = "15px Poppins";
+      this.ctx.font = "45px Poppins";
       this.ctx.fillText(
         this.message2,
         this.width * 0.5,
-        this.height * 0.5 - 20
+        this.height * 0.5 - 45
       );
       this.ctx.fillText(
         "Press 'R' to restart!",
