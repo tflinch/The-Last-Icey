@@ -37,7 +37,7 @@ Game Over Screen
 Update WireFrames:
 
 Home Screen
-![Home Screen](./assets/wireframes/Hom e-Screen2.png)
+![Home Screen](./assets/wireframes/Home-Screen2.png)
 
 Game Start Screen
 ![Game Start Screen](./assets/wireframes/Game-Active.png)

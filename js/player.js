@@ -13,18 +13,26 @@ class Player {
     this.collisionY;
     this.collisionRadius;
     this.contact;
+    this.image = document.getElementById("player_icepop");
   }
   draw() {
-    this.game.ctx.fillRect(this.x, this.y, this.width, this.height);
-    this.game.ctx.beginPath();
-    this.game.ctx.arc(
-      this.collisionX,
-      this.collisionY,
-      this.collisionRadius,
-      0,
-      Math.PI * 2
+    // this.game.ctx.strokeRect(this.x, this.y, this.width, this.height);
+    this.game.ctx.drawImage(
+      this.image,
+      this.x,
+      this.y,
+      this.width,
+      this.height
     );
-    this.game.ctx.stroke();
+    // this.game.ctx.beginPath();
+    // this.game.ctx.arc(
+    //   this.collisionX,
+    //   this.collisionY,
+    //   this.collisionRadius,
+    //   0,
+    //   Math.PI * 2
+    // );
+    // this.game.ctx.stroke();
   }
   update() {
     this.y += this.speedY;
@@ -43,8 +51,8 @@ class Player {
     this.y = this.game.height * 0.5 - this.height * 0.5;
     this.speedY = -8 * this.game.ratio;
     this.moveSpeed = 5 * this.game.ratio;
-    this.collisionRadius = this.width * 0.5;
-    this.collisionX = this.x + this.width * 0.5;
+    this.collisionRadius = 80 * this.game.ratio;
+    this.collisionX = this.x + this.width * 0.5 - 20;
     this.contact = false;
   }
   isTouchingTop() {

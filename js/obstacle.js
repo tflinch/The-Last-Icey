@@ -1,8 +1,8 @@
 class Obstacle {
   constructor(game, x) {
     this.game = game;
-    this.spriteWidth = 120;
-    this.spriteHeight = 120;
+    this.spriteWidth = 160;
+    this.spriteHeight = 160;
     this.scaledWidth = this.spriteWidth * this.game.ratio;
     this.scaledHeight = this.spriteHeight * this.game.ratio;
     this.x = x;
@@ -10,10 +10,11 @@ class Obstacle {
     this.y = Math.random() * (this.game.height - this.scaledHeight);
     this.collisionX;
     this.collisionY;
-    this.collisionRadius = this.scaledWidth * 0.5;
+    this.collisionRadius = this.scaledWidth * 0.35;
     this.speedY =
       Math.random() < 0.5 ? -1 * this.game.ratio : 1 * this.game.ratio;
     this.markedForDeletion = false;
+    this.imgage = document.getElementById("monster");
   }
   update() {
     this.x -= this.game.speed;
@@ -44,16 +45,23 @@ class Obstacle {
   }
   draw() {
     //draws cricle that will be used to reference for collison
-    this.game.ctx.fillRect(this.x, this.y, this.scaledWidth, this.scaledHeight);
-    this.game.ctx.beginPath();
-    this.game.ctx.arc(
-      this.collisionX,
-      this.collisionY,
-      this.collisionRadius,
-      0,
-      Math.PI * 2
+    // this.game.ctx.fillRect(this.x, this.y, this.scaledWidth, this.scaledHeight);
+    this.game.ctx.drawImage(
+      this.imgage,
+      this.x,
+      this.y,
+      this.scaledWidth,
+      this.scaledHeight
     );
-    this.game.ctx.stroke();
+    // this.game.ctx.beginPath();
+    // this.game.ctx.arc(
+    //   this.collisionX,
+    //   this.collisionY,
+    //   this.collisionRadius,
+    //   0,
+    //   Math.PI * 2
+    // );
+    // this.game.ctx.stroke();
   }
   resize() {
     this.scaledWidth = this.spriteWidth * this.game.ratio;

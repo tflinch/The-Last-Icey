@@ -18,6 +18,7 @@ class Game {
     this.timer;
     this.message1;
     this.message2;
+    this.message3;
 
     this.resize(window.innerWidth, window.innerHeight);
 
@@ -46,7 +47,7 @@ class Game {
   resize(width, height) {
     this.canvas.width = width;
     this.canvas.height = height;
-    this.ctx.fillStyle = "orange";
+    //this.ctx.fillStyle = "orange";
     this.ctx.font = "35px Poppins";
     this.ctx.textAlign = "right";
     this.ctx.lineWidth = 3;
@@ -117,11 +118,31 @@ class Game {
     } else {
       this.message1 = "Tap to start";
       this.ctx.textAlign = "center";
-      this.ctx.font = "50px Poppins";
+      this.ctx.font = "bold 100px Montserrat Alternates";
+      this.ctx.fillStyle = "black";
       this.ctx.fillText(
         this.message1,
         this.width * 0.5,
         this.height * 0.5 - 40
+      );
+      this.message2 = "How to Play:";
+      this.ctx.textAlign = "left";
+      this.ctx.font = "60px Poppins";
+      this.ctx.fillStyle = "white";
+      this.ctx.fillText(
+        this.message2,
+        this.width * 0.75,
+        this.height * 0.5 - -260
+      );
+      // next message
+      this.message3 = "SpaceBar Or Tap or Click to Move";
+      this.ctx.textAlign = "left";
+      this.ctx.font = "20px Poppins";
+      this.ctx.fillStyle = "white";
+      this.ctx.fillText(
+        this.message3,
+        this.width * 0.75,
+        this.height * 0.5 - -300
       );
     }
     if (this.gameOver) {
