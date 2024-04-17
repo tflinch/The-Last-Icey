@@ -37,11 +37,29 @@ class Game {
         this.player.move();
       } else if (e.code === "Space") {
         this.player.move();
+      } else if (e.key === "r" || e.key === "R") {
+        if (this.gameOver) {
+          this.restartGame();
+        }
       }
     });
     // touch controls
     this.canvas.addEventListener("touchstart", (e) => {
       this.player.move();
+    });
+  }
+  restartGame() {
+    // Reset game variables to their initial state
+    this.gameStart = false;
+    this.gameOver = false;
+    this.timer = 0;
+    this.score = 0;
+    this.numberOfObstacles = 20;
+    this.player.update();
+    this.createObstacles();
+    this.obstacles.forEach((obstacle) => {
+      obstacle.update();
+      obstacle.draw();
     });
   }
   resize(width, height) {
@@ -87,12 +105,15 @@ class Game {
         obstacle.update();
         obstacle.draw();
       });
+      if (this.timer >= 40000) {
+        let more = this.createObstacles();
+      }
     }
   }
   createObstacles() {
     this.obstacles = [];
     const firstX = this.baseHeight * this.ratio;
-    const obstacleSpacing = 400 * this.ratio;
+    const obstacleSpacing = 600 * this.ratio;
     for (let i = 0; i < this.numberOfObstacles; i++) {
       this.obstacles.push(new Obstacle(this, firstX + i * obstacleSpacing));
     }
