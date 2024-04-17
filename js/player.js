@@ -57,5 +57,8 @@ class Player {
     if (!this.isTouchingTop()) {
       this.speedY = -this.moveSpeed;
     }
+    if (!this.game.gameStart) {
+      this.game.gameStart = true;
+    }
   }
 }

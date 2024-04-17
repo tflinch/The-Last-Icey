@@ -9,10 +9,11 @@ class Game {
     this.background = new Background(this);
     this.player = new Player(this);
     this.obstacles = [];
-    this.numberOfObstacles = 1;
+    this.numberOfObstacles = 10;
     this.gravity;
     this.speed;
     this.score;
+    this.gameStart;
     this.gameOver;
     this.timer;
     this.message1;
@@ -62,22 +63,30 @@ class Game {
     this.obstacles.forEach((obstacle) => {
       obstacle.resize();
     });
+    this.gameStart = false;
     this.score = 0;
     this.gameOver = false;
     this.timer = 0;
   }
   render(deltaTime) {
     //console.log(deltaTime); avg refresh time 60 frames a second
+
     if (!this.gameOver) this.timer += deltaTime;
-    this.background.update();
-    this.background.draw();
-    this.drawStatusText();
-    this.player.update();
-    this.player.draw();
-    this.obstacles.forEach((obstacle) => {
-      obstacle.update();
-      obstacle.draw();
-    });
+    if (!this.gameStart) {
+      this.background.draw();
+      this.player.draw();
+      this.drawStatusText();
+    } else {
+      this.background.update();
+      this.background.draw();
+      this.drawStatusText();
+      this.player.update();
+      this.player.draw();
+      this.obstacles.forEach((obstacle) => {
+        obstacle.update();
+        obstacle.draw();
+      });
+    }
   }
   createObstacles() {
     this.obstacles = [];
@@ -101,9 +110,20 @@ class Game {
   }
   drawStatusText() {
     this.ctx.save();
-    this.ctx.fillText("Score: " + this.score, this.width - 15, 40);
-    this.ctx.textAlign = "left";
-    this.ctx.fillText("Timer: " + this.formatTimer(), 10, 40);
+    if (this.gameStart) {
+      this.ctx.fillText("Score: " + this.score, this.width - 15, 40);
+      this.ctx.textAlign = "left";
+      this.ctx.fillText("Timer: " + this.formatTimer(), 10, 40);
+    } else {
+      this.message1 = "Tap to start";
+      this.ctx.textAlign = "center";
+      this.ctx.font = "50px Poppins";
+      this.ctx.fillText(
+        this.message1,
+        this.width * 0.5,
+        this.height * 0.5 - 40
+      );
+    }
     if (this.gameOver) {
       if (this.player.contact) {
         this.message1 = "Melted!";

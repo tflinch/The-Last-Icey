@@ -20,9 +20,13 @@ class Obstacle {
     this.y += this.speedY;
     this.collisionX = this.x + this.scaledHeight * 0.5;
     this.collisionY = this.y + this.scaledWidth * 0.5;
-    //creates the boundry of the obstacles and flips them when hitting the position
-    if (this.y <= 0 || this.y >= this.game.height - this.scaledHeight) {
-      this.speedY *= -1;
+    if (!this.game.gameOver) {
+      //creates the boundry of the obstacles and flips them when hitting the position
+      if (this.y <= 0 || this.y >= this.game.height - this.scaledHeight) {
+        this.speedY *= -1;
+      }
+    } else {
+      this.speedY += 0.1;
     }
     if (this.isOffScreen()) {
       this.markedForDeletion = true;
@@ -56,6 +60,6 @@ class Obstacle {
     this.scaledHeight = this.spriteHeight * this.game.ratio;
   }
   isOffScreen() {
-    return this.x < -this.scaledWidth;
+    return this.x < -this.scaledWidth || this.y > this.game.height;
   }
 }
