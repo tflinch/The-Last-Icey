@@ -1,5 +1,5 @@
 I Scream IceCream
-SEI SEBPT220 Project 1: The last iceyPop
+SEI SEBPT220 Project 1: The last Icey
 
 A flappy bird inspired survial game
 
