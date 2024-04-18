@@ -41,6 +41,7 @@ class Obstacle {
     if (this.game.detectHit(this, this.game.player)) {
       this.game.gameOver = true;
       this.game.player.contact = true;
+      console.log(this.game.sound.bump);
     }
   }
   draw() {

@@ -10,7 +10,7 @@ class Game {
     this.player = new Player(this);
     this.sound = new SoundControl();
     this.obstacles = [];
-    this.numberOfObstacles = 1;
+    this.numberOfObstacles = 11;
     this.gravity;
     this.speed;
     this.score;
@@ -113,7 +113,7 @@ class Game {
   createObstacles() {
     this.obstacles = [];
     const firstX = this.baseHeight * this.ratio;
-    const obstacleSpacing = 600 * this.ratio;
+    const obstacleSpacing = 300 * this.ratio;
     for (let i = 0; i < this.numberOfObstacles; i++) {
       this.obstacles.push(new Obstacle(this, firstX + i * obstacleSpacing));
     }
