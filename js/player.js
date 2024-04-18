@@ -64,6 +64,7 @@ class Player {
   move() {
     if (!this.isTouchingTop()) {
       this.speedY = -this.moveSpeed;
+      this.game.sound.move.play();
     }
     if (!this.game.gameStart) {
       this.game.gameStart = true;

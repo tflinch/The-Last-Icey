@@ -8,8 +8,9 @@ class Game {
     this.ratio = this.height / this.baseHeight;
     this.background = new Background(this);
     this.player = new Player(this);
+    this.sound = new SoundControl();
     this.obstacles = [];
-    this.numberOfObstacles = 20;
+    this.numberOfObstacles = 1;
     this.gravity;
     this.speed;
     this.score;
@@ -106,7 +107,6 @@ class Game {
         obstacle.draw();
       });
       if (this.timer >= 40000) {
-        let more = this.createObstacles();
       }
     }
   }
@@ -163,8 +163,9 @@ class Game {
         this.message1 = "Melted!";
         this.message2 = "Time survied " + this.formatTimer() + " seconds!";
       } else if (this.obstacles.length <= 0) {
-        this.message1 = "Ice-Cream Forever";
+        this.message1 = "Ice-Pops Forever";
         this.message2 = "Time survied " + this.formatTimer() + " seconds!";
+        this.sound.winner.play();
       }
       this.ctx.textAlign = "center";
       this.ctx.font = "80px Poppins";
