@@ -74,7 +74,7 @@ class Player {
   move() {
     if (!this.isTouchingTop()) {
       this.speedY = -this.moveSpeed;
-      this.game.sound.move.play();
+      this.game.sound.playMove();
       // pinch on flap, eases back in update()
       this.squashX = 0.85;
       this.squashY = 1.15;

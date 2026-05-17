@@ -143,7 +143,7 @@ class Game {
     } catch (e) {
       // localStorage may be blocked; high scores still display in-session
     }
-    if (this.newBest) this.sound.winner.play();
+    if (this.newBest) this.sound.playWinner();
   }
   applyDifficulty() {
     // smooth ramp: 1x at start, ~2x at 50s, capped at 3x
@@ -198,6 +198,17 @@ class Game {
   formatTimer() {
     return (this.timer * 0.001).toFixed(1);
   }
+  drawPanel(y, h) {
+    const w = Math.min(640, this.width * 0.85);
+    const x = (this.width - w) * 0.5;
+    this.ctx.save();
+    this.ctx.fillStyle = "rgba(0, 0, 0, 0.55)";
+    this.ctx.fillRect(x, y, w, h);
+    this.ctx.strokeStyle = "rgba(255, 255, 255, 0.25)";
+    this.ctx.lineWidth = 1;
+    this.ctx.strokeRect(x + 0.5, y + 0.5, w - 1, h - 1);
+    this.ctx.restore();
+  }
   drawStatusText() {
     this.ctx.save();
     if (this.gameStart && !this.gameOver) {
@@ -205,6 +216,7 @@ class Game {
       this.ctx.textAlign = "left";
       this.ctx.fillText("Timer: " + this.formatTimer(), 10, 40);
     } else if (!this.gameStart) {
+      this.drawPanel(this.height * 0.5 - 140, 260);
       this.ctx.textAlign = "center";
       this.ctx.font = "bold 100px Poppins";
       this.ctx.fillStyle = "white";
@@ -230,6 +242,7 @@ class Game {
       );
     }
     if (this.gameOver) {
+      this.drawPanel(this.height * 0.5 - 180, 260);
       this.ctx.textAlign = "center";
       this.ctx.font = "80px Poppins";
       this.ctx.fillStyle = "white";
