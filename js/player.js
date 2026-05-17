@@ -2,21 +2,20 @@ class Player {
   constructor(game) {
     this.game = game;
     this.x = 50;
-    this.y;
+    this.y = 0;
     this.spriteWidth = 200;
     this.spriteHeight = 200;
-    this.width;
-    this.height;
-    this.speedY;
-    this.moveSpeed;
-    this.collisionX;
-    this.collisionY;
-    this.collisionRadius;
-    this.contact;
+    this.width = 0;
+    this.height = 0;
+    this.speedY = 0;
+    this.moveSpeed = 0;
+    this.collisionX = 0;
+    this.collisionY = 0;
+    this.collisionRadius = 0;
+    this.contact = false;
     this.image = document.getElementById("player_icepop");
   }
   draw() {
-    // this.game.ctx.strokeRect(this.x, this.y, this.width, this.height);
     this.game.ctx.drawImage(
       this.image,
       this.x,
@@ -24,15 +23,6 @@ class Player {
       this.width,
       this.height
     );
-    // this.game.ctx.beginPath();
-    // this.game.ctx.arc(
-    //   this.collisionX,
-    //   this.collisionY,
-    //   this.collisionRadius,
-    //   0,
-    //   Math.PI * 2
-    // );
-    // this.game.ctx.stroke();
   }
   update() {
     this.y += this.speedY;
@@ -40,7 +30,6 @@ class Player {
     if (!this.isTouchingBottom()) {
       this.speedY += this.game.gravity;
     }
-    //bottom boundary
     if (this.isTouchingBottom()) {
       this.y = this.game.height - this.height;
     }

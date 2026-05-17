@@ -1,38 +1,39 @@
 I Scream IceCream
-SEI SEBPT220 Project 1: The last Icey
+SEI SEBPT220 Project 1: The Last Icey
 
-A flappy bird inspired survial game
+A Flappy Bird-inspired survival game.
 
 HOW TO PLAY
 
 Start Up Screen:
 Main Menu
 How To Play
-SpaceBar,Tap or Click to move
+SpaceBar, Tap, or Click to move
+Arrow Up / Down or W / S also move the icey-pop
 
 Game Start Screen:
 Play Screen
 
 Game Over Screen:
-Score History
+Press R to restart
 
 HOW TO INSTALL
-Fork and Clone this respository to your local machine
-Open index.html in your browser to play or
-Open the directory in your text editor of choice to view or edit the code
+Fork and clone this repository to your local machine.
+Open `index.html` in your browser to play, or
+open the directory in your text editor of choice to view or edit the code.
 
 HOW IT WORKS
-The Last iceyPop runs on is sidescrolling game loop that. There is one gravity function: tbat forces the IceCream down. There are Obsticals that will cauase the IceCream to melt
+The Last IceyPop runs on a side-scrolling game loop. There is one gravity function that forces the icey-pop down. There are obstacles that will cause the icey-pop to melt on contact.
 
 timeStamp
-`timeStamp` is a value in milli seconds that is built in object in requestAnimate
-`deltaTime` is the difference between the current and prevous logged times
-`requestAnimation` autmaticaly adjust the speed of refresh to the media. examaple 60fps~ depending on the device.
+`timeStamp` is a value in milliseconds built into `requestAnimationFrame`.
+`deltaTime` is the difference between the current and previous logged times.
+`requestAnimationFrame` automatically adjusts the speed of refresh to the media &mdash; for example, ~60fps depending on the device.
 
 ```js
 let previousTime = 0;
 function animate(timeStamp) {
-  //deltaTime is the diffrence of previousTime and current frame
+  // deltaTime is the difference of previousTime and current frame
   const deltaTime = timeStamp - previousTime;
   previousTime = timeStamp;
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -42,15 +43,15 @@ function animate(timeStamp) {
 requestAnimationFrame(animate);
 ```
 
-Random obstacles position and speed
+Random obstacle position and speed
 
-To add to the game complexity and had AI like components to the game. I randomized the different positions of
+To add complexity and AI-like behavior to the game, the obstacles randomize their starting positions and direction:
 
-`this.y` is set the positing of the object on the y axis to radom and keeps it scaled to the games height
-`this.speedY` randomizes the direction based on the 50 50 probability.
+`this.y` sets the position of the object on the y axis to random and keeps it scaled to the game's height.
+`this.speedY` randomizes the direction based on a 50/50 probability.
 
 ```js
-//randmize obstcales on the Y axis
+// randomize obstacles on the Y axis
 this.y = Math.random() * (this.game.height - this.scaledHeight);
 this.speedY = Math.random() < 0.5 ? -1 * this.game.ratio : 1 * this.game.ratio;
 ```
@@ -58,20 +59,19 @@ this.speedY = Math.random() < 0.5 ? -1 * this.game.ratio : 1 * this.game.ratio;
 Stretch Goals:
 
 Game logic:
-I would like to incoropate increased diffuclty the longer the player is alive. Possibly spawning 2 additional obistacles for every 20 seconds the user surives.
+Incorporate increasing difficulty the longer the player is alive. Possibly spawn 2 additional obstacles for every 20 seconds the user survives.
 
-I would also like to give the player a health bar the more the player moves the faster the icePop melts. The user would have to grab health restoring objects.
+Give the player a health bar &mdash; the more the player moves, the faster the ice-pop melts. The user would have to grab health-restoring objects.
 
 Animation:
-Updating the player to reflect different states in the game would be another addition.
-A image for melting, melted, moving, and collision frames.
+Updating the player to reflect different states in the game would be another addition &mdash; images for melting, melted, moving, and collision frames.
 
-Sited Resources:
+Cited Resources:
 https://mixkit.co/free-sound-effects/game/
 https://craftpix.net/freebies/free-cartoon-parallax-2d-backgrounds/
 https://www.youtube.com/watch?v=jj5ADM2uywg
 
-Inital WireFrame Concepts:
+Initial WireFrame Concepts:
 
 Home Screen
 ![Home Screen](./assets/wireframes/Home-Screen.png)
@@ -82,7 +82,7 @@ Game Start Screen
 Game Over Screen
 ![Game Over Screen](./assets/wireframes/Game-OverScreen.png)
 
-Update WireFrames:
+Updated WireFrames:
 
 Home Screen
 ![Home Screen](./assets/wireframes/Home-Screen2.png)

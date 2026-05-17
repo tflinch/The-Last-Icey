@@ -3,21 +3,28 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>The last iceyPop</title>
+    <title>The Last IceyPop &mdash; Browser Game</title>
+    <meta
+      name="description"
+      content="Dodge melting monsters in The Last IceyPop, a browser canvas survival game inspired by Flappy Bird."
+    />
+    <meta property="og:title" content="The Last IceyPop" />
+    <meta
+      property="og:description"
+      content="Dodge melting monsters in this browser canvas survival game inspired by Flappy Bird."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="assets/images/icee-icee2.png" />
+    <link rel="icon" type="image/png" href="assets/images/icee-icee2.png" />
     <link rel="stylesheet" href="./css/styles.css" />
   </head>
   <body>
-    <canvas id="canvas1"></canvas>
+    <canvas id="canvas1" aria-label="The Last IceyPop game canvas"></canvas>
 
-    <div class="background-assets">
-      <img
-        id="background"
-        src="assets/images/City3.png"
-        alt="City Background"
-        srcset=""
-      />
-      <img id="player_icepop" src="assets/images/icee-icee2.png" />
-      <img id="monster" src="assets/images/monster.png" />
+    <div class="background-assets" aria-hidden="true">
+      <img id="background" src="assets/images/City3.png" alt="" />
+      <img id="player_icepop" src="assets/images/icee-icee2.png" alt="" />
+      <img id="monster" src="assets/images/monster.png" alt="" />
       <audio
         id="victory"
         src="assets/sounds/mixkit-completion-of-a-level-2063.wav"
@@ -27,8 +34,6 @@
         src="assets/sounds/mixkit-arcade-retro-jump-223.wav"
       ></audio>
     </div>
-    <!-- Typed js -->
-    <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
     <script src="./js/audio.js"></script>
     <script src="./js/background.js"></script>
     <script src="./js/player.js"></script>

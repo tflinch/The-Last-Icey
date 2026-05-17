@@ -11,62 +11,52 @@ class Game {
     this.sound = new SoundControl();
     this.obstacles = [];
     this.numberOfObstacles = 11;
-    this.gravity;
-    this.speed;
-    this.score;
-    this.gameStart;
-    this.gameOver;
-    this.timer;
-    this.message1;
-    this.message2;
-    this.message3;
+    this.gravity = 0;
+    this.speed = 0;
+    this.score = 0;
+    this.gameStart = false;
+    this.gameOver = false;
+    this.timer = 0;
+    this.message1 = "";
+    this.message2 = "";
+    this.message3 = "";
 
     this.resize(window.innerWidth, window.innerHeight);
+    this.init();
 
     window.addEventListener("resize", (e) => {
       this.resize(e.currentTarget.innerWidth, e.currentTarget.innerHeight);
     });
-    // mouse controls
-    this.canvas.addEventListener("mousedown", (e) => {
-      this.player.move();
-    });
-    //keyboard controls
+    this.canvas.addEventListener("mousedown", () => this.player.move());
+    this.canvas.addEventListener("touchstart", () => this.player.move());
     window.addEventListener("keydown", (e) => {
-      if (e.key === "ArrowUp" || e.key === "w") {
+      const isMoveKey =
+        e.code === "Space" ||
+        e.key === "ArrowUp" ||
+        e.key === "ArrowDown" ||
+        e.key === "w" ||
+        e.key === "s";
+      if (isMoveKey) {
         this.player.move();
-      } else if (e.key === "ArrowDown" || e.key === "s") {
-        this.player.move();
-      } else if (e.code === "Space") {
-        this.player.move();
-      } else if (e.key === "r" || e.key === "R") {
-        if (this.gameOver) {
-          this.restartGame();
-        }
+      } else if ((e.key === "r" || e.key === "R") && this.gameOver) {
+        this.restartGame();
       }
     });
-    // touch controls
-    this.canvas.addEventListener("touchstart", (e) => {
-      this.player.move();
-    });
   }
-  restartGame() {
-    // Reset game variables to their initial state
+  init() {
     this.gameStart = false;
     this.gameOver = false;
     this.timer = 0;
     this.score = 0;
-    this.numberOfObstacles = 20;
-    this.player.update();
     this.createObstacles();
-    this.obstacles.forEach((obstacle) => {
-      obstacle.update();
-      obstacle.draw();
-    });
+  }
+  restartGame() {
+    this.player.resize();
+    this.init();
   }
   resize(width, height) {
     this.canvas.width = width;
     this.canvas.height = height;
-    //this.ctx.fillStyle = "orange";
     this.ctx.font = "35px Poppins";
     this.ctx.textAlign = "right";
     this.ctx.lineWidth = 3;
@@ -79,18 +69,9 @@ class Game {
     this.speed = 2 * this.ratio;
     this.background.resize();
     this.player.resize();
-    this.createObstacles();
-    this.obstacles.forEach((obstacle) => {
-      obstacle.resize();
-    });
-    this.gameStart = false;
-    this.score = 0;
-    this.gameOver = false;
-    this.timer = 0;
+    this.obstacles.forEach((o) => o.resize());
   }
   render(deltaTime) {
-    //console.log(deltaTime); avg refresh time 60 frames a second
-
     if (!this.gameOver) this.timer += deltaTime;
     if (!this.gameStart) {
       this.background.draw();
@@ -106,7 +87,10 @@ class Game {
         obstacle.update();
         obstacle.draw();
       });
-      if (this.timer >= 40000) {
+      this.obstacles = this.obstacles.filter((o) => !o.markedForDeletion);
+      if (!this.gameOver && this.obstacles.length <= 0) {
+        this.gameOver = true;
+        this.sound.winner.play();
       }
     }
   }
@@ -119,7 +103,6 @@ class Game {
     }
   }
   detectHit(a, b) {
-    //distance between the two objects
     const dx = a.collisionX - b.collisionX;
     const dy = a.collisionY - b.collisionY;
     const distance = Math.hypot(dx, dy);
@@ -127,7 +110,6 @@ class Game {
     return distance <= sumOfRadii;
   }
   formatTimer() {
-    //cleans up timer and removes two decemial points
     return (this.timer * 0.001).toFixed(1);
   }
   drawStatusText() {
@@ -151,7 +133,6 @@ class Game {
       this.ctx.font = "60px Poppins";
       this.ctx.fillStyle = "white";
       this.ctx.fillText(this.message2, this.width * 0.65, this.height * 0.7);
-      // next message
       this.message3 = "SpaceBar Or Tap or Click to Move";
       this.ctx.textAlign = "left";
       this.ctx.font = "20px Poppins";
@@ -161,11 +142,10 @@ class Game {
     if (this.gameOver) {
       if (this.player.contact) {
         this.message1 = "Melted!";
-        this.message2 = "Time survied " + this.formatTimer() + " seconds!";
+        this.message2 = "Time survived " + this.formatTimer() + " seconds!";
       } else if (this.obstacles.length <= 0) {
         this.message1 = "Ice-Pops Forever";
-        this.message2 = "Time survied " + this.formatTimer() + " seconds!";
-        this.sound.winner.play();
+        this.message2 = "Time survived " + this.formatTimer() + " seconds!";
       }
       this.ctx.textAlign = "center";
       this.ctx.font = "80px Poppins";
@@ -200,7 +180,6 @@ window.addEventListener("load", function () {
 
   let previousTime = 0;
   function animate(timeStamp) {
-    //deltaTime is the diffrence of previousTime and current frame
     const deltaTime = timeStamp - previousTime;
     previousTime = timeStamp;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
