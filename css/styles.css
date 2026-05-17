@@ -41,3 +41,12 @@
   outline: 2px solid #ffd84d;
   outline-offset: 2px;
 }
+
+@media (max-width: 600px) {
+  .mute-toggle {
+    top: 6px;
+    left: 6px;
+    padding: 4px 8px;
+    font-size: 12px;
+  }
+}

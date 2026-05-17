@@ -17,6 +17,7 @@ class Game {
     this.baseSpeed = 0;
     this.gravity = 0;
     this.speed = 0;
+    this.speedMultiplier = 1;
     this.score = 0;
     this.gameStart = false;
     this.gameOver = false;
@@ -102,6 +103,7 @@ class Game {
       this.player.collisionY - 20,
       4
     );
+    this.sound.playCombo(this.combo);
   }
   restartGame() {
     this.player.resize();
@@ -187,8 +189,8 @@ class Game {
   }
   applyDifficulty() {
     // smooth ramp: 1x at start, ~2x at 50s, capped at 3x
-    const rampFactor = Math.min(3, 1 + this.timer * 0.00002);
-    this.speed = this.baseSpeed * rampFactor;
+    this.speedMultiplier = Math.min(3, 1 + this.timer * 0.00002);
+    this.speed = this.baseSpeed * this.speedMultiplier;
   }
   render(deltaTime) {
     if (!this.gameOver && !this.paused) this.timer += deltaTime;
@@ -267,6 +269,21 @@ class Game {
       this.ctx.fillText("Score: " + this.score, this.width - 15, 40);
       this.ctx.textAlign = "left";
       this.ctx.fillText("Timer: " + this.formatTimer(), 10, 40);
+      this.ctx.save();
+      this.ctx.font = "22px Poppins";
+      this.ctx.textAlign = "right";
+      this.ctx.fillStyle =
+        this.speedMultiplier >= 2.5
+          ? "#ff6b6b"
+          : this.speedMultiplier >= 1.8
+          ? "#ffd84d"
+          : "white";
+      this.ctx.fillText(
+        "Speed " + this.speedMultiplier.toFixed(1) + "x",
+        this.width - 15,
+        72
+      );
+      this.ctx.restore();
       const sinceMiss = this.timer - this.lastNearMissTime;
       if (this.combo > 1 && sinceMiss < 2000) {
         const fade = 1 - sinceMiss / 2000;

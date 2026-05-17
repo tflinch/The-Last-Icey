@@ -53,6 +53,13 @@ class SoundControl {
     this.winner.currentTime = 0;
     this.winner.play();
   }
+  playCombo(comboLevel) {
+    if (this.muted) return;
+    // reuse the jump sound but pitched up — climbs with combo, capped so it stays musical
+    this.move.playbackRate = Math.min(2.4, 1.3 + comboLevel * 0.08);
+    this.move.currentTime = 0;
+    this.move.play();
+  }
   ensureMusicPlaying() {
     if (!this.bgMusic || this.musicStarted || this.musicDisabled) return;
     this.musicStarted = true;
