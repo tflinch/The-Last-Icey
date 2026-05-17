@@ -3,8 +3,12 @@ class Obstacle {
     this.game = game;
     this.spriteWidth = 160;
     this.spriteHeight = 160;
-    this.scaledWidth = this.spriteWidth * this.game.ratio;
-    this.scaledHeight = this.spriteHeight * this.game.ratio;
+    // each obstacle is slightly different size + hue so they don't all look identical
+    this.sizeMultiplier = 0.85 + Math.random() * 0.3;
+    this.hue = (Math.floor(Math.random() * 7) - 3) * 30;
+    this.scaledWidth = this.spriteWidth * this.game.ratio * this.sizeMultiplier;
+    this.scaledHeight =
+      this.spriteHeight * this.game.ratio * this.sizeMultiplier;
     this.x = x;
     this.y = Math.random() * (this.game.height - this.scaledHeight);
     this.collisionX = 0;
@@ -44,17 +48,24 @@ class Obstacle {
     }
   }
   draw() {
-    this.game.ctx.drawImage(
+    const ctx = this.game.ctx;
+    ctx.save();
+    if (this.hue !== 0) {
+      ctx.filter = "hue-rotate(" + this.hue + "deg)";
+    }
+    ctx.drawImage(
       this.image,
       this.x,
       this.y,
       this.scaledWidth,
       this.scaledHeight
     );
+    ctx.restore();
   }
   resize() {
-    this.scaledWidth = this.spriteWidth * this.game.ratio;
-    this.scaledHeight = this.spriteHeight * this.game.ratio;
+    this.scaledWidth = this.spriteWidth * this.game.ratio * this.sizeMultiplier;
+    this.scaledHeight =
+      this.spriteHeight * this.game.ratio * this.sizeMultiplier;
     this.collisionRadius = this.scaledWidth * 0.35;
   }
   isOffScreen() {

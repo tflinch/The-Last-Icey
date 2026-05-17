@@ -20,6 +20,7 @@ class Game {
     this.score = 0;
     this.gameStart = false;
     this.gameOver = false;
+    this.paused = false;
     this.timer = 0;
     this.shake = 0;
     this.highScore = 0;
@@ -36,8 +37,13 @@ class Game {
     window.addEventListener("resize", (e) => {
       this.resize(e.currentTarget.innerWidth, e.currentTarget.innerHeight);
     });
-    this.canvas.addEventListener("mousedown", () => this.player.move());
-    this.canvas.addEventListener("touchstart", () => this.player.move());
+    window.addEventListener("blur", () => {
+      if (this.gameStart && !this.gameOver && !this.paused) {
+        this.paused = true;
+      }
+    });
+    this.canvas.addEventListener("mousedown", () => this.handleAction());
+    this.canvas.addEventListener("touchstart", () => this.handleAction());
     window.addEventListener("keydown", (e) => {
       const isMoveKey =
         e.code === "Space" ||
@@ -45,16 +51,29 @@ class Game {
         e.key === "ArrowDown" ||
         e.key === "w" ||
         e.key === "s";
-      if (isMoveKey) {
-        this.player.move();
+      if (e.key === "p" || e.key === "P") {
+        if (this.gameStart && !this.gameOver) this.togglePause();
+      } else if (isMoveKey) {
+        this.handleAction();
       } else if ((e.key === "r" || e.key === "R") && this.gameOver) {
         this.restartGame();
       }
     });
   }
+  handleAction() {
+    if (this.paused) {
+      this.togglePause();
+      return;
+    }
+    this.player.move();
+  }
+  togglePause() {
+    this.paused = !this.paused;
+  }
   init() {
     this.gameStart = false;
     this.gameOver = false;
+    this.paused = false;
     this.timer = 0;
     this.score = 0;
     this.shake = 0;
@@ -151,8 +170,8 @@ class Game {
     this.speed = this.baseSpeed * rampFactor;
   }
   render(deltaTime) {
-    if (!this.gameOver) this.timer += deltaTime;
-    this.applyDifficulty();
+    if (!this.gameOver && !this.paused) this.timer += deltaTime;
+    if (!this.paused) this.applyDifficulty();
 
     // gameplay layer — shakeable
     this.ctx.save();
@@ -160,28 +179,29 @@ class Game {
       const sx = (Math.random() - 0.5) * this.shake;
       const sy = (Math.random() - 0.5) * this.shake;
       this.ctx.translate(sx, sy);
-      this.shake *= 0.85;
-      if (this.shake < 0.5) this.shake = 0;
+      if (!this.paused) {
+        this.shake *= 0.85;
+        if (this.shake < 0.5) this.shake = 0;
+      }
     }
 
     if (!this.gameStart) {
       this.background.draw();
       this.player.draw();
     } else {
-      this.background.update();
+      if (!this.paused) {
+        this.background.update();
+        this.player.update();
+        this.obstacles.forEach((o) => o.update());
+        this.obstacles = this.obstacles.filter((o) => !o.markedForDeletion);
+        if (!this.gameOver) this.refillObstacles();
+        this.particles.forEach((p) => p.update(deltaTime));
+        this.particles = this.particles.filter((p) => p.life > 0);
+      }
       this.background.draw();
-      this.player.update();
       this.player.draw();
-      this.obstacles.forEach((obstacle) => {
-        obstacle.update();
-        obstacle.draw();
-      });
-      this.obstacles = this.obstacles.filter((o) => !o.markedForDeletion);
-      if (!this.gameOver) this.refillObstacles();
-
-      this.particles.forEach((p) => p.update(deltaTime));
+      this.obstacles.forEach((o) => o.draw());
       this.particles.forEach((p) => p.draw(this.ctx));
-      this.particles = this.particles.filter((p) => p.life > 0);
     }
     this.ctx.restore();
 
@@ -240,6 +260,11 @@ class Game {
         this.width * 0.65,
         this.height * 0.8
       );
+      this.ctx.fillText(
+        "Press P to Pause",
+        this.width * 0.65,
+        this.height * 0.85
+      );
     }
     if (this.gameOver) {
       this.drawPanel(this.height * 0.5 - 180, 260);
@@ -273,6 +298,19 @@ class Game {
         "Press 'R' to restart!",
         this.width * 0.5,
         this.height * 0.5 + 50
+      );
+    }
+    if (this.paused && !this.gameOver) {
+      this.drawPanel(this.height * 0.5 - 70, 140);
+      this.ctx.textAlign = "center";
+      this.ctx.font = "bold 80px Poppins";
+      this.ctx.fillStyle = "white";
+      this.ctx.fillText("Paused", this.width * 0.5, this.height * 0.5);
+      this.ctx.font = "25px Poppins";
+      this.ctx.fillText(
+        "Press P or click to resume",
+        this.width * 0.5,
+        this.height * 0.5 + 40
       );
     }
     this.ctx.restore();
