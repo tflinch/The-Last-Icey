@@ -27,13 +27,20 @@ class Obstacle {
     } else {
       this.speedY += 0.1;
     }
-    if (this.isOffScreen()) {
+    if (this.isOffScreen() && !this.markedForDeletion) {
       this.markedForDeletion = true;
       this.game.score++;
+      this.game.spawnParticles(0, this.collisionY, 6);
     }
-    if (this.game.detectHit(this, this.game.player)) {
+    if (!this.game.gameOver && this.game.detectHit(this, this.game.player)) {
       this.game.gameOver = true;
       this.game.player.contact = true;
+      this.game.shake = 18 * this.game.ratio;
+      this.game.spawnParticles(
+        this.game.player.collisionX,
+        this.game.player.collisionY,
+        18
+      );
     }
   }
   draw() {

@@ -13,19 +13,34 @@ class Player {
     this.collisionY = 0;
     this.collisionRadius = 0;
     this.contact = false;
+    // squash-and-stretch state, eases back to 1
+    this.squashX = 1;
+    this.squashY = 1;
     this.image = document.getElementById("player_icepop");
   }
   draw() {
-    this.game.ctx.drawImage(
+    const ctx = this.game.ctx;
+    const cx = this.x + this.width * 0.5;
+    const cy = this.y + this.height * 0.5;
+    // tilt toward direction of travel, clamped so it never goes vertical
+    const maxRot = 0.6; // ~34deg
+    const angle = Math.max(-maxRot, Math.min(maxRot, this.speedY * 0.06));
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(angle);
+    ctx.scale(this.squashX, this.squashY);
+    ctx.drawImage(
       this.image,
-      this.x,
-      this.y,
+      -this.width * 0.5,
+      -this.height * 0.5,
       this.width,
       this.height
     );
+    ctx.restore();
   }
   update() {
     this.y += this.speedY;
+    this.collisionX = this.x + this.width * 0.5 - 20;
     this.collisionY = this.y + this.height * 0.5;
     if (!this.isTouchingBottom()) {
       this.speedY += this.game.gravity;
@@ -33,6 +48,9 @@ class Player {
     if (this.isTouchingBottom()) {
       this.y = this.game.height - this.height;
     }
+    // ease squash back to neutral
+    this.squashX += (1 - this.squashX) * 0.2;
+    this.squashY += (1 - this.squashY) * 0.2;
   }
   resize() {
     this.width = this.spriteWidth * this.game.ratio;
@@ -40,9 +58,12 @@ class Player {
     this.y = this.game.height * 0.5 - this.height * 0.5;
     this.speedY = -8 * this.game.ratio;
     this.moveSpeed = 5 * this.game.ratio;
-    this.collisionRadius = 80 * this.game.ratio;
+    // tighter than the visible sprite so near-misses feel like skill
+    this.collisionRadius = 55 * this.game.ratio;
     this.collisionX = this.x + this.width * 0.5 - 20;
     this.contact = false;
+    this.squashX = 1;
+    this.squashY = 1;
   }
   isTouchingTop() {
     return this.y <= 0;
@@ -54,6 +75,9 @@ class Player {
     if (!this.isTouchingTop()) {
       this.speedY = -this.moveSpeed;
       this.game.sound.move.play();
+      // pinch on flap, eases back in update()
+      this.squashX = 0.85;
+      this.squashY = 1.15;
     }
     if (!this.game.gameStart) {
       this.game.gameStart = true;

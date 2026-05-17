@@ -10,6 +10,7 @@ class Game {
     this.player = new Player(this);
     this.sound = new SoundControl();
     this.obstacles = [];
+    this.particles = [];
     this.numberOfObstacles = 11;
     this.gravity = 0;
     this.speed = 0;
@@ -17,6 +18,7 @@ class Game {
     this.gameStart = false;
     this.gameOver = false;
     this.timer = 0;
+    this.shake = 0;
     this.message1 = "";
     this.message2 = "";
     this.message3 = "";
@@ -48,6 +50,8 @@ class Game {
     this.gameOver = false;
     this.timer = 0;
     this.score = 0;
+    this.shake = 0;
+    this.particles = [];
     this.createObstacles();
   }
   restartGame() {
@@ -71,16 +75,30 @@ class Game {
     this.player.resize();
     this.obstacles.forEach((o) => o.resize());
   }
+  spawnParticles(x, y, count = 6) {
+    for (let i = 0; i < count; i++) {
+      this.particles.push(new Particle(x, y));
+    }
+  }
   render(deltaTime) {
     if (!this.gameOver) this.timer += deltaTime;
+
+    // gameplay layer — shakeable
+    this.ctx.save();
+    if (this.shake > 0) {
+      const sx = (Math.random() - 0.5) * this.shake;
+      const sy = (Math.random() - 0.5) * this.shake;
+      this.ctx.translate(sx, sy);
+      this.shake *= 0.85;
+      if (this.shake < 0.5) this.shake = 0;
+    }
+
     if (!this.gameStart) {
       this.background.draw();
       this.player.draw();
-      this.drawStatusText();
     } else {
       this.background.update();
       this.background.draw();
-      this.drawStatusText();
       this.player.update();
       this.player.draw();
       this.obstacles.forEach((obstacle) => {
@@ -88,11 +106,20 @@ class Game {
         obstacle.draw();
       });
       this.obstacles = this.obstacles.filter((o) => !o.markedForDeletion);
+
+      this.particles.forEach((p) => p.update(deltaTime));
+      this.particles.forEach((p) => p.draw(this.ctx));
+      this.particles = this.particles.filter((p) => p.life > 0);
+
       if (!this.gameOver && this.obstacles.length <= 0) {
         this.gameOver = true;
         this.sound.winner.play();
       }
     }
+    this.ctx.restore();
+
+    // UI layer — steady, never shakes
+    this.drawStatusText();
   }
   createObstacles() {
     this.obstacles = [];
