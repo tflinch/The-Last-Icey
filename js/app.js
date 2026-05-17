@@ -11,7 +11,10 @@ class Game {
     this.sound = new SoundControl();
     this.obstacles = [];
     this.particles = [];
-    this.numberOfObstacles = 11;
+    // target number of live obstacles on screen at once (endless spawn keeps refilling)
+    this.numberOfObstacles = 6;
+    this.obstacleSpacing = 300;
+    this.baseSpeed = 0;
     this.gravity = 0;
     this.speed = 0;
     this.score = 0;
@@ -19,10 +22,14 @@ class Game {
     this.gameOver = false;
     this.timer = 0;
     this.shake = 0;
+    this.highScore = 0;
+    this.highTime = 0;
+    this.newBest = false;
     this.message1 = "";
     this.message2 = "";
     this.message3 = "";
 
+    this.loadHighScore();
     this.resize(window.innerWidth, window.innerHeight);
     this.init();
 
@@ -51,8 +58,10 @@ class Game {
     this.timer = 0;
     this.score = 0;
     this.shake = 0;
+    this.newBest = false;
     this.particles = [];
-    this.createObstacles();
+    this.obstacles = [];
+    this.spawnInitialObstacles();
   }
   restartGame() {
     this.player.resize();
@@ -70,18 +79,80 @@ class Game {
     this.ratio = this.height / this.baseHeight;
 
     this.gravity = 0.15 * this.ratio;
-    this.speed = 2 * this.ratio;
+    this.baseSpeed = 2 * this.ratio;
+    this.speed = this.baseSpeed;
     this.background.resize();
     this.player.resize();
     this.obstacles.forEach((o) => o.resize());
+  }
+  spawnInitialObstacles() {
+    const firstX = this.baseHeight * this.ratio;
+    for (let i = 0; i < this.numberOfObstacles; i++) {
+      this.obstacles.push(
+        new Obstacle(this, firstX + i * this.obstacleSpacing * this.ratio)
+      );
+    }
+  }
+  refillObstacles() {
+    while (this.obstacles.length < this.numberOfObstacles) {
+      let rightmost = this.width;
+      for (const o of this.obstacles) {
+        if (o.x > rightmost) rightmost = o.x;
+      }
+      this.obstacles.push(
+        new Obstacle(this, rightmost + this.obstacleSpacing * this.ratio)
+      );
+    }
   }
   spawnParticles(x, y, count = 6) {
     for (let i = 0; i < count; i++) {
       this.particles.push(new Particle(x, y));
     }
   }
+  endGame() {
+    if (this.gameOver) return;
+    this.gameOver = true;
+    this.saveHighScore();
+  }
+  loadHighScore() {
+    try {
+      this.highScore = parseInt(
+        localStorage.getItem("iceyHighScore") || "0",
+        10
+      );
+      this.highTime = parseFloat(localStorage.getItem("iceyHighTime") || "0");
+    } catch (e) {
+      this.highScore = 0;
+      this.highTime = 0;
+    }
+  }
+  saveHighScore() {
+    this.newBest = false;
+    const time = parseFloat(this.formatTimer());
+    try {
+      if (this.score > this.highScore) {
+        this.highScore = this.score;
+        localStorage.setItem("iceyHighScore", String(this.score));
+        this.newBest = true;
+      }
+      if (time > this.highTime) {
+        this.highTime = time;
+        localStorage.setItem("iceyHighTime", String(time));
+        this.newBest = true;
+      }
+    } catch (e) {
+      // localStorage may be blocked; high scores still display in-session
+    }
+    if (this.newBest) this.sound.winner.play();
+  }
+  applyDifficulty() {
+    // smooth ramp: 1x at start, ~2x at 50s, capped at 3x
+    const rampFactor = Math.min(3, 1 + this.timer * 0.00002);
+    this.speed = this.baseSpeed * rampFactor;
+  }
   render(deltaTime) {
     if (!this.gameOver) this.timer += deltaTime;
+    this.applyDifficulty();
 
     // gameplay layer — shakeable
     this.ctx.save();
@@ -106,28 +177,16 @@ class Game {
         obstacle.draw();
       });
       this.obstacles = this.obstacles.filter((o) => !o.markedForDeletion);
+      if (!this.gameOver) this.refillObstacles();
 
       this.particles.forEach((p) => p.update(deltaTime));
       this.particles.forEach((p) => p.draw(this.ctx));
       this.particles = this.particles.filter((p) => p.life > 0);
-
-      if (!this.gameOver && this.obstacles.length <= 0) {
-        this.gameOver = true;
-        this.sound.winner.play();
-      }
     }
     this.ctx.restore();
 
     // UI layer — steady, never shakes
     this.drawStatusText();
-  }
-  createObstacles() {
-    this.obstacles = [];
-    const firstX = this.baseHeight * this.ratio;
-    const obstacleSpacing = 300 * this.ratio;
-    for (let i = 0; i < this.numberOfObstacles; i++) {
-      this.obstacles.push(new Obstacle(this, firstX + i * obstacleSpacing));
-    }
   }
   detectHit(a, b) {
     const dx = a.collisionX - b.collisionX;
@@ -141,56 +200,66 @@ class Game {
   }
   drawStatusText() {
     this.ctx.save();
-    if (this.gameStart) {
+    if (this.gameStart && !this.gameOver) {
       this.ctx.fillText("Score: " + this.score, this.width - 15, 40);
       this.ctx.textAlign = "left";
       this.ctx.fillText("Timer: " + this.formatTimer(), 10, 40);
-    } else {
-      this.message1 = "Tap to start";
+    } else if (!this.gameStart) {
       this.ctx.textAlign = "center";
       this.ctx.font = "bold 100px Poppins";
       this.ctx.fillStyle = "white";
-      this.ctx.fillText(
-        this.message1,
-        this.width * 0.5,
-        this.height * 0.5 - 40
-      );
-      this.message2 = "How to Play:";
+      this.ctx.fillText("Tap to start", this.width * 0.5, this.height * 0.5 - 40);
+
+      if (this.highTime > 0) {
+        this.ctx.font = "30px Poppins";
+        this.ctx.fillText(
+          "Best: " + this.highTime.toFixed(1) + "s  /  " + this.highScore + " dodged",
+          this.width * 0.5,
+          this.height * 0.5 + 30
+        );
+      }
+
       this.ctx.textAlign = "left";
       this.ctx.font = "60px Poppins";
-      this.ctx.fillStyle = "white";
-      this.ctx.fillText(this.message2, this.width * 0.65, this.height * 0.7);
-      this.message3 = "SpaceBar Or Tap or Click to Move";
-      this.ctx.textAlign = "left";
+      this.ctx.fillText("How to Play:", this.width * 0.65, this.height * 0.7);
       this.ctx.font = "20px Poppins";
-      this.ctx.fillStyle = "white";
-      this.ctx.fillText(this.message3, this.width * 0.65, this.height * 0.8);
+      this.ctx.fillText(
+        "SpaceBar Or Tap or Click to Move",
+        this.width * 0.65,
+        this.height * 0.8
+      );
     }
     if (this.gameOver) {
-      if (this.player.contact) {
-        this.message1 = "Melted!";
-        this.message2 = "Time survived " + this.formatTimer() + " seconds!";
-      } else if (this.obstacles.length <= 0) {
-        this.message1 = "Ice-Pops Forever";
-        this.message2 = "Time survived " + this.formatTimer() + " seconds!";
-      }
       this.ctx.textAlign = "center";
       this.ctx.font = "80px Poppins";
-      this.ctx.fillText(
-        this.message1,
-        this.width * 0.5,
-        this.height * 0.5 - 80
-      );
+      this.ctx.fillStyle = "white";
+      this.ctx.fillText("Melted!", this.width * 0.5, this.height * 0.5 - 100);
+
       this.ctx.font = "45px Poppins";
       this.ctx.fillText(
-        this.message2,
+        "Time survived " + this.formatTimer() + "s  /  " + this.score + " dodged",
         this.width * 0.5,
         this.height * 0.5 - 45
       );
+
+      this.ctx.font = "35px Poppins";
+      if (this.newBest) {
+        this.ctx.fillStyle = "#ffd84d";
+        this.ctx.fillText("NEW BEST!", this.width * 0.5, this.height * 0.5);
+        this.ctx.fillStyle = "white";
+      } else {
+        this.ctx.fillText(
+          "Best: " + this.highTime.toFixed(1) + "s",
+          this.width * 0.5,
+          this.height * 0.5
+        );
+      }
+
+      this.ctx.font = "30px Poppins";
       this.ctx.fillText(
         "Press 'R' to restart!",
         this.width * 0.5,
-        this.height * 0.5
+        this.height * 0.5 + 50
       );
     }
     this.ctx.restore();

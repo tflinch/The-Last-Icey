@@ -33,7 +33,6 @@ class Obstacle {
       this.game.spawnParticles(0, this.collisionY, 6);
     }
     if (!this.game.gameOver && this.game.detectHit(this, this.game.player)) {
-      this.game.gameOver = true;
       this.game.player.contact = true;
       this.game.shake = 18 * this.game.ratio;
       this.game.spawnParticles(
@@ -41,6 +40,7 @@ class Obstacle {
         this.game.player.collisionY,
         18
       );
+      this.game.endGame();
     }
   }
   draw() {
