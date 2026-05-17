@@ -17,6 +17,7 @@ class Obstacle {
     this.speedY =
       Math.random() < 0.5 ? -1 * this.game.ratio : 1 * this.game.ratio;
     this.markedForDeletion = false;
+    this.hasPassedPlayer = false;
     this.image = document.getElementById("monster");
   }
   update() {
@@ -30,6 +31,17 @@ class Obstacle {
       }
     } else {
       this.speedY += 0.1;
+    }
+    if (
+      !this.hasPassedPlayer &&
+      !this.game.gameOver &&
+      this.collisionX < this.game.player.collisionX
+    ) {
+      this.hasPassedPlayer = true;
+      const dy = Math.abs(this.collisionY - this.game.player.collisionY);
+      const nearMissRange =
+        (this.game.player.collisionRadius + this.collisionRadius) * 1.8;
+      if (dy < nearMissRange) this.game.registerNearMiss(this);
     }
     if (this.isOffScreen() && !this.markedForDeletion) {
       this.markedForDeletion = true;

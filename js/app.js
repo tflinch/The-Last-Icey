@@ -23,6 +23,8 @@ class Game {
     this.paused = false;
     this.timer = 0;
     this.shake = 0;
+    this.combo = 0;
+    this.lastNearMissTime = -10000;
     this.highScore = 0;
     this.highTime = 0;
     this.newBest = false;
@@ -84,10 +86,22 @@ class Game {
     this.timer = 0;
     this.score = 0;
     this.shake = 0;
+    this.combo = 0;
+    this.lastNearMissTime = -10000;
     this.newBest = false;
     this.particles = [];
     this.obstacles = [];
     this.spawnInitialObstacles();
+  }
+  registerNearMiss(obstacle) {
+    this.combo++;
+    this.lastNearMissTime = this.timer;
+    // tiny sparkle at the player so feedback is unmistakable
+    this.spawnParticles(
+      this.player.collisionX,
+      this.player.collisionY - 20,
+      4
+    );
   }
   restartGame() {
     this.player.resize();
@@ -253,6 +267,20 @@ class Game {
       this.ctx.fillText("Score: " + this.score, this.width - 15, 40);
       this.ctx.textAlign = "left";
       this.ctx.fillText("Timer: " + this.formatTimer(), 10, 40);
+      const sinceMiss = this.timer - this.lastNearMissTime;
+      if (this.combo > 1 && sinceMiss < 2000) {
+        const fade = 1 - sinceMiss / 2000;
+        this.ctx.save();
+        this.ctx.textAlign = "center";
+        this.ctx.fillStyle = `rgba(255, 216, 77, ${fade})`;
+        this.ctx.font = "bold 40px Poppins";
+        this.ctx.fillText(
+          "Combo x" + this.combo + "!",
+          this.width * 0.5,
+          90
+        );
+        this.ctx.restore();
+      }
     } else if (!this.gameStart) {
       this.drawPanel(this.height * 0.5 - 140, 260);
       this.ctx.textAlign = "center";
@@ -285,7 +313,7 @@ class Game {
       );
     }
     if (this.gameOver) {
-      this.drawPanel(this.height * 0.5 - 180, 260);
+      this.drawPanel(this.height * 0.5 - 180, 290);
       this.ctx.textAlign = "center";
       this.ctx.font = "80px Poppins";
       this.ctx.fillStyle = "white";
@@ -299,15 +327,24 @@ class Game {
       );
 
       this.ctx.font = "35px Poppins";
+      if (this.combo > 1) {
+        this.ctx.fillStyle = "#ffd84d";
+        this.ctx.fillText(
+          "Top combo: x" + this.combo,
+          this.width * 0.5,
+          this.height * 0.5 - 5
+        );
+        this.ctx.fillStyle = "white";
+      }
       if (this.newBest) {
         this.ctx.fillStyle = "#ffd84d";
-        this.ctx.fillText("NEW BEST!", this.width * 0.5, this.height * 0.5);
+        this.ctx.fillText("NEW BEST!", this.width * 0.5, this.height * 0.5 + 30);
         this.ctx.fillStyle = "white";
       } else {
         this.ctx.fillText(
           "Best: " + this.highTime.toFixed(1) + "s",
           this.width * 0.5,
-          this.height * 0.5
+          this.height * 0.5 + 30
         );
       }
 
@@ -315,7 +352,7 @@ class Game {
       this.ctx.fillText(
         "Press 'R' to restart!",
         this.width * 0.5,
-        this.height * 0.5 + 50
+        this.height * 0.5 + 80
       );
     }
     if (this.paused && !this.gameOver) {
