@@ -17,6 +17,8 @@ class Player {
     this.squashX = 1;
     this.squashY = 1;
     this.image = document.getElementById("player_icepop");
+    // alt frame is optional — falls back to main if missing so the game still draws
+    this.imageAlt = document.getElementById("player_icepop_alt") || this.image;
   }
   draw() {
     const ctx = this.game.ctx;
@@ -25,12 +27,14 @@ class Player {
     // tilt toward direction of travel, clamped so it never goes vertical
     const maxRot = 0.6; // ~34deg
     const angle = Math.max(-maxRot, Math.min(maxRot, this.speedY * 0.06));
+    // alt frame while rising (just flapped), default while falling
+    const frame = this.speedY < 0 ? this.imageAlt : this.image;
     ctx.save();
     ctx.translate(cx, cy);
     ctx.rotate(angle);
     ctx.scale(this.squashX, this.squashY);
     ctx.drawImage(
-      this.image,
+      frame,
       -this.width * 0.5,
       -this.height * 0.5,
       this.width,

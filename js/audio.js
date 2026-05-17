@@ -2,9 +2,14 @@ class SoundControl {
   constructor() {
     this.winner = document.getElementById("victory");
     this.move = document.getElementById("jump");
+    this.bgMusic = document.getElementById("bgMusic");
     // winner sound is loud; pull it back so it doesn't dominate the flap sfx
     this.winner.volume = 0.5;
     this.move.volume = 0.6;
+    if (this.bgMusic) this.bgMusic.volume = 0.25;
+
+    this.musicStarted = false;
+    this.musicDisabled = false;
 
     this.muted = false;
     try {
@@ -21,6 +26,7 @@ class SoundControl {
   applyMute() {
     this.winner.muted = this.muted;
     this.move.muted = this.muted;
+    if (this.bgMusic) this.bgMusic.muted = this.muted;
   }
   toggleMute() {
     this.muted = !this.muted;
@@ -46,5 +52,22 @@ class SoundControl {
     if (this.muted) return;
     this.winner.currentTime = 0;
     this.winner.play();
+  }
+  ensureMusicPlaying() {
+    if (!this.bgMusic || this.musicStarted || this.musicDisabled) return;
+    this.musicStarted = true;
+    this.bgMusic.play().catch(() => {
+      // missing file, blocked by autoplay policy, or codec unsupported — give up quietly
+      this.musicStarted = false;
+      this.musicDisabled = true;
+    });
+  }
+  pauseMusic() {
+    if (this.bgMusic && this.musicStarted) this.bgMusic.pause();
+  }
+  resumeMusic() {
+    if (this.bgMusic && this.musicStarted) {
+      this.bgMusic.play().catch(() => {});
+    }
   }
 }

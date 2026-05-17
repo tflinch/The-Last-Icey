@@ -61,6 +61,8 @@ class Game {
     });
   }
   handleAction() {
+    // first interaction is the user gesture needed to start audio playback
+    this.sound.ensureMusicPlaying();
     if (this.paused) {
       this.togglePause();
       return;
@@ -69,6 +71,11 @@ class Game {
   }
   togglePause() {
     this.paused = !this.paused;
+    if (this.paused) {
+      this.sound.pauseMusic();
+    } else {
+      this.sound.resumeMusic();
+    }
   }
   init() {
     this.gameStart = false;
@@ -204,6 +211,17 @@ class Game {
       this.particles.forEach((p) => p.draw(this.ctx));
     }
     this.ctx.restore();
+
+    // day/night tint — fades from clear to deep blue as the timer climbs
+    if (this.gameStart) {
+      const dayProgress = Math.min(1, this.timer / 60000);
+      if (dayProgress > 0) {
+        this.ctx.save();
+        this.ctx.fillStyle = `rgba(10, 25, 70, ${dayProgress * 0.45})`;
+        this.ctx.fillRect(0, 0, this.width, this.height);
+        this.ctx.restore();
+      }
+    }
 
     // UI layer — steady, never shakes
     this.drawStatusText();

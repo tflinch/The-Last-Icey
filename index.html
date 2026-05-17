@@ -33,6 +33,7 @@
     <div class="background-assets" aria-hidden="true">
       <img id="background" src="assets/images/City3.png" alt="" />
       <img id="player_icepop" src="assets/images/icee-icee2.png" alt="" />
+      <img id="player_icepop_alt" src="assets/images/icee-icee.png" alt="" />
       <img id="monster" src="assets/images/monster.png" alt="" />
       <audio
         id="victory"
@@ -41,6 +42,17 @@
       <audio
         id="jump"
         src="assets/sounds/mixkit-arcade-retro-jump-223.wav"
+      ></audio>
+      <!--
+        Background music: drop a looping track at assets/sounds/bg-music.mp3
+        and it auto-plays on the first user interaction. Missing file = silent.
+        See readme for free sources.
+      -->
+      <audio
+        id="bgMusic"
+        src="assets/sounds/bg-music.mp3"
+        loop
+        preload="none"
       ></audio>
     </div>
     <script src="./js/audio.js"></script>

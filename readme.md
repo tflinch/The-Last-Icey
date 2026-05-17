@@ -66,6 +66,17 @@ Give the player a health bar &mdash; the more the player moves, the faster the i
 Animation:
 Updating the player to reflect different states in the game would be another addition &mdash; images for melting, melted, moving, and collision frames.
 
+Background Music (optional):
+Drop a looping audio file at `assets/sounds/bg-music.mp3` and it will auto-play
+on the first user interaction. Missing file = silent (no error). Recommended
+sources for free, game-friendly tracks:
+
+- https://pixabay.com/music/ &mdash; CC0-equivalent, no attribution required
+- https://opengameart.org/ &mdash; purpose-built for game devs, filter by CC0
+- https://soundimage.org/ &mdash; Eric Matyas, CC-BY 4.0 (credit him)
+- https://incompetech.com/ &mdash; Kevin MacLeod, CC-BY 4.0
+- https://freesound.org/ &mdash; mostly SFX but also loops
+
 Cited Resources:
 https://mixkit.co/free-sound-effects/game/
 https://craftpix.net/freebies/free-cartoon-parallax-2d-backgrounds/
