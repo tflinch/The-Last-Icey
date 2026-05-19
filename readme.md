@@ -85,21 +85,21 @@ https://www.youtube.com/watch?v=jj5ADM2uywg
 Initial WireFrame Concepts:
 
 Home Screen
-![Home Screen](./assets/wireframes/Home-Screen.png)
+![Home Screen](./docs/wireframes/Home-Screen.png)
 
 Game Start Screen
-![Game Start Screen](./assets/wireframes/Game-StartScreen.png)
+![Game Start Screen](./docs/wireframes/Game-StartScreen.png)
 
 Game Over Screen
-![Game Over Screen](./assets/wireframes/Game-OverScreen.png)
+![Game Over Screen](./docs/wireframes/Game-OverScreen.png)
 
 Updated WireFrames:
 
 Home Screen
-![Home Screen](./assets/wireframes/Home-Screen2.png)
+![Home Screen](./docs/wireframes/Home-Screen2.png)
 
 Game Start Screen
-![Game Start Screen](./assets/wireframes/Game-Active.png)
+![Game Start Screen](./docs/wireframes/Game-Active.png)
 
 Game Over Screen
-![Game Over Screen](./assets/wireframes/Game-OverScreen2.png)
+![Game Over Screen](./docs/wireframes/Game-OverScreen2.png)

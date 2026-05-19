@@ -1,0 +1,2 @@
+Icons are generated at build time via `cargo tauri icon`.
+See ../../BUILD.md for the one-time setup command.

@@ -1,0 +1,45 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "The Last IceyPop",
+  "version": "1.0.0",
+  "identifier": "com.tflinch.thelasticey",
+  "build": {
+    "frontendDist": "../web",
+    "devUrl": "http://localhost:1420",
+    "beforeDevCommand": "",
+    "beforeBuildCommand": ""
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "The Last IceyPop",
+        "width": 1280,
+        "height": 720,
+        "minWidth": 640,
+        "minHeight": 480,
+        "resizable": true,
+        "fullscreen": false,
+        "decorations": true,
+        "transparent": false,
+        "center": true
+      }
+    ],
+    "security": {
+      "csp": null,
+      "freezePrototype": false
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["nsis"],
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.ico"
+    ],
+    "category": "Game",
+    "shortDescription": "Dodge melting monsters in this endless arcade survival game.",
+    "longDescription": "A Flappy Bird-inspired survival game. Tap, click, or press space to keep your icey-pop airborne while dodging hue-shifting monsters. Difficulty ramps over time, near misses build a combo chain, and your best run persists between sessions."
+  }
+}

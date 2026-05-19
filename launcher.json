@@ -1,0 +1,9 @@
+{
+  "id": "the-last-icey",
+  "title": "The Last IceyPop",
+  "studio": "tflinch",
+  "genre": "Arcade",
+  "executable": "the-last-icey.exe",
+  "version": "1.0.0",
+  "cover": "radial-gradient(at 20% 20%, #4dd0e1 0%, transparent 55%), radial-gradient(at 80% 80%, #ff6b9d 0%, transparent 55%), linear-gradient(135deg, #0a1f3d, #1e3a5f)"
+}

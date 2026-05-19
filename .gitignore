@@ -2,3 +2,10 @@
 Thumbs.db
 *.log
 node_modules/
+
+# Tauri build artifacts
+/src-tauri/target/
+Cargo.lock
+
+# Generated launcher drop folder
+/dist/
